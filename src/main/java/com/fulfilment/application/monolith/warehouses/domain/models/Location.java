@@ -1,5 +1,8 @@
 package com.fulfilment.application.monolith.warehouses.domain.models;
 
+import com.fulfilment.application.monolith.warehouses.domain.WarehouseValidationException;
+import java.util.List;
+
 public class Location {
   public String identification;
 
@@ -13,5 +16,18 @@ public class Location {
     this.identification = identification;
     this.maxNumberOfWarehouses = maxNumberOfWarehouses;
     this.maxCapacity = maxCapacity;
+  }
+
+  public void validateFits(List<Warehouse> activeWarehouses, Warehouse incoming) {
+    if (activeWarehouses.size() >= maxNumberOfWarehouses) {
+      throw new WarehouseValidationException(
+          "Location " + identification + " already holds its maximum number of warehouses.");
+    }
+
+    int usedCapacity = activeWarehouses.stream().mapToInt(warehouse -> warehouse.capacity).sum();
+    if (usedCapacity + incoming.capacity > maxCapacity) {
+      throw new WarehouseValidationException(
+          "Location " + identification + " does not have enough capacity left.");
+    }
   }
 }

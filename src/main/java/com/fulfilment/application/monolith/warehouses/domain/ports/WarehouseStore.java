@@ -5,6 +5,9 @@ import java.util.List;
 
 public interface WarehouseStore {
 
+  /** 
+   * Only the active warehouses: archived ones are excluded 
+  */
   List<Warehouse> getAll();
 
   void create(Warehouse warehouse);
@@ -13,5 +16,20 @@ public interface WarehouseStore {
 
   void remove(Warehouse warehouse);
 
+  /** 
+   * Only the active warehouse holding that code, or null: archived ones are excluded. 
+  */
   Warehouse findByBusinessUnitCode(String buCode);
+
+  /**
+   *  Whether that code was ever used, by an active or by an archived warehouse
+  */
+  boolean existsByBusinessUnitCode(String buCode);
+
+  /** 
+   * The record with that technical id, or null: archived ones are included
+  */
+  Warehouse findByTechnicalId(Long id);
+
+  List<Warehouse> findActiveByLocation(String locationIdentifier);
 }
